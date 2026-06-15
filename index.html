@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="\u7ec3">
+<meta name="theme-color" content="#0f0f0f">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAEGElEQVR4nO3dS3ITMRiFUdnF3OyC/S+HXdArCAMqIX73u6Wrc0ZQVDlt6eNHccfmVCpxuVw+jr4GlhmG4XT0NRx2AQLOd0Tgu35BEfdrr7g3/yIi5taWcW/2wELmnS3CXv0BhcxUa4Z9XuuBShEz86zZzSp/M4TMWpZO68UTWsysaWlPi4IWM1tY0tWs8S5k9jL1CDJ5QouZPU3tbVLQYuYIU7obHbSYOdLY/lZ9HRqONipo05kajOnwbdBipibvenwZtJip0asunaGJ8jRo05maPevzYdBipgWPOnXkIMpd0KYzLbnt1YQmylXQpjMt+t6tCU0UQRPlK2jHDVr22a8JTRRBE+VUiuMGOUxoogiaKIImytn5mSQmNFEETRRBE0XQRBE0UQRNFEETRdBEETRRBE0UQRNF0EQRNFEETRRBE+XH0Rcwx+8/w9evf/283P2eaZLWs7kJ/X2x5/w519LWs6mgxy5ua5twlMT1bCboqYva0iYcIXU9mwh67mK2sgl7S17PJoKGsQRNFEETRdBEETRRdr1TmHRHins17O9uEzrtjhTXatnfXYJOvCPFfzXt7+ZBp96R4p/a9nfToJPvSFHn/nqVgyiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImSpMfeD5Xz2/t6uVjIrqZ0D3HXEo/z7+LoHvZzHd6WIf4oHvYxCnS1yM+aPoiaKIImiiCJoqgiSJoogiaKIImSnzQvfwMw1jp6xEfdCn5mzhWD+vQRdCl9LGZr/Ty/Lv68dFeNrVn3Uxo+iBoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiibBr03Lc8eatUG2rc380n9NSLF3NbatvfXY4cY5+EmNtU0/7udoZ+92TE3LZa9nfXjzG4fVIizlLD/nqVgyiCJoqgiSJoogiaKE0EXeMdqZYlr2cTQZdS3x2p1qWuZzNBl1LXHakEievZVNCl1HNHKkXaep4ul8vH0RcBa2luQsMrgiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIlyHobhdPRFwFpMaKIImiiCJsq5lFKco0kwDMPJhCaKoInyFbRjBy377NeEJoqgiXIVtGMHLfrerQlNlLugTWlacturCU2Uh0Gb0rTgUadPJ7SoqdmzPh05iPIyaFOaGr3q8u2EFjU1edfjqCOHqKnBmA6doYkyOmhTmiON7W/ShBY1R5jS3eQjh6jZ09TeFsXp/zhkK3MH56JvCk1rtrCkq8WvcoiaNS3tadUYHUGYa63BuOrr0KY1c6zZzWYBmta8s8UA3HyiCptbW/5LvusRQdz92us4etiZV9z5jvie6i96fEPQqGjdpQAAAABJRU5ErkJggg==">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAEGElEQVR4nO3dS3ITMRiFUdnF3OyC/S+HXdArCAMqIX73u6Wrc0ZQVDlt6eNHccfmVCpxuVw+jr4GlhmG4XT0NRx2AQLOd0Tgu35BEfdrr7g3/yIi5taWcW/2wELmnS3CXv0BhcxUa4Z9XuuBShEz86zZzSp/M4TMWpZO68UTWsysaWlPi4IWM1tY0tWs8S5k9jL1CDJ5QouZPU3tbVLQYuYIU7obHbSYOdLY/lZ9HRqONipo05kajOnwbdBipibvenwZtJip0asunaGJ8jRo05maPevzYdBipgWPOnXkIMpd0KYzLbnt1YQmylXQpjMt+t6tCU0UQRPlK2jHDVr22a8JTRRBE+VUiuMGOUxoogiaKIImytn5mSQmNFEETRRBE0XQRBE0UQRNFEETRdBEETRRBE0UQRNF0EQRNFEETRRBE+XH0Rcwx+8/w9evf/283P2eaZLWs7kJ/X2x5/w519LWs6mgxy5ua5twlMT1bCboqYva0iYcIXU9mwh67mK2sgl7S17PJoKGsQRNFEETRdBEETRRdr1TmHRHins17O9uEzrtjhTXatnfXYJOvCPFfzXt7+ZBp96R4p/a9nfToJPvSFHn/nqVgyiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImSpMfeD5Xz2/t6uVjIrqZ0D3HXEo/z7+LoHvZzHd6WIf4oHvYxCnS1yM+aPoiaKIImiiCJoqgiSJoogiaKIImSnzQvfwMw1jp6xEfdCn5mzhWD+vQRdCl9LGZr/Ty/Lv68dFeNrVn3Uxo+iBoogiaKIImiqCJImiiCJoogiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiibBr03Lc8eatUG2rc380n9NSLF3NbatvfXY4cY5+EmNtU0/7udoZ+92TE3LZa9nfXjzG4fVIizlLD/nqVgyiCJoqgiSJoogiaKE0EXeMdqZYlr2cTQZdS3x2p1qWuZzNBl1LXHakEievZVNCl1HNHKkXaep4ul8vH0RcBa2luQsMrgiaKoIkiaKIImiiCJoqgiSJoogiaKIImiqCJImiiCJoogiaKoIlyHobhdPRFwFpMaKIImiiCJsq5lFKco0kwDMPJhCaKoInyFbRjBy377NeEJoqgiXIVtGMHLfrerQlNlLugTWlacturCU2Uh0Gb0rTgUadPJ7SoqdmzPh05iPIyaFOaGr3q8u2EFjU1edfjqCOHqKnBmA6doYkyOmhTmiON7W/ShBY1R5jS3eQjh6jZ09TeFsXp/zhkK3MH56JvCk1rtrCkq8WvcoiaNS3tadUYHUGYa63BuOrr0KY1c6zZzWYBmta8s8UA3HyiCptbW/5LvusRQdz92us4etiZV9z5jvie6i96fEPQqGjdpQAAAABJRU5ErkJggg==">
+<title>12周训练计划</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #0f0f0f;
+    color: #e8e8e8;
+    min-height: 100vh;
+    padding: 24px 16px;
+    padding-top: max(24px, env(safe-area-inset-top));
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 24px;
+  }
+
+  .week-selector {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+
+  .week-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #333;
+    background: #1a1a1a;
+    color: #888;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .week-btn:hover { border-color: #555; color: #ccc; }
+  .week-btn.active { background: #e8ff00; color: #000; border-color: #e8ff00; font-weight: 700; }
+  .week-btn.completed { background: #1a2a1a; border-color: #2d5a2d; color: #4a9a4a; }
+
+  .day-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .day-tab {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #222;
+    background: #141414;
+    color: #666;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .day-tab:hover { border-color: #444; color: #aaa; }
+  .day-tab.active { border-color: #e8ff00; color: #e8ff00; background: #1a1f00; }
+  .day-tab.done { border-color: #2d5a2d; color: #4a9a4a; background: #0d1a0d; }
+
+  .day-label {
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.7;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .exercise-card {
+    background: #141414;
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+
+  .exercise-card.completed-card { border-color: #2d5a2d; }
+
+  .exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .exercise-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .exercise-target {
+    font-size: 12px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  .weight-badge {
+    background: #e8ff00;
+    color: #000;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .sets-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .set-box {
+    background: #0f0f0f;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .set-box:hover { border-color: #444; }
+  .set-box.set-done { background: #0d1a0d; border-color: #2d5a2d; }
+
+  .set-number {
+    font-size: 10px;
+    color: #555;
+    margin-bottom: 4px;
+  }
+
+  .set-reps {
+    font-size: 16px;
+    font-weight: 700;
+    color: #e8ff00;
+  }
+
+  .set-box.set-done .set-reps { color: #4a9a4a; }
+  .set-check { font-size: 18px; }
+
+  .progress-bar-wrap {
+    background: #1a1a1a;
+    border-radius: 4px;
+    height: 4px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: #e8ff00;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  .finish-btn {
+    width: 100%;
+    padding: 14px;
+    background: #e8ff00;
+    color: #000;
+    font-size: 15px;
+    font-weight: 800;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s;
+  }
+
+  .finish-btn:hover { opacity: 0.85; }
+  .finish-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .note-box {
+    background: #141414;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: #888;
+    line-height: 1.6;
+  }
+
+  .note-box strong { color: #e8ff00; }
+
+  .progress-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    background: #141414;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #e8ff00;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: #555;
+    margin-top: 2px;
+  }
+
+  .increase-badge {
+    font-size: 10px;
+    background: #1a2a1a;
+    color: #4a9a4a;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
+  }
+</style>
+</head>
+<body>
+
+<h1>12周训练计划 💪</h1>
+<p class="subtitle">线性进阶 · 全身复合 · 每周3次力量</p>
+
+<div class="progress-summary">
+  <div class="stat-card">
+    <div class="stat-value" id="stat-weeks">0</div>
+    <div class="stat-label">完成周数</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-sessions">0</div>
+    <div class="stat-label">完成训练</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-pct">0%</div>
+    <div class="stat-label">总进度</div>
+  </div>
+</div>
+
+<div style="margin-bottom:10px; font-size:12px; color:#555;">选择周次</div>
+<div class="week-selector" id="week-selector"></div>
+
+<div class="day-tabs" id="day-tabs">
+  <div class="day-tab active" onclick="selectDay(0)">
+    周一
+    <span class="day-label">力量 5×5</span>
+  </div>
+  <div class="day-tab" onclick="selectDay(1)">
+    周三
+    <span class="day-label">肌肥大 4×12</span>
+  </div>
+  <div class="day-tab" onclick="selectDay(2)">
+    周五
+    <span class="day-label">混合 4×8</span>
+  </div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="session-progress" style="width:0%"></div>
+</div>
+
+<div id="exercise-list"></div>
+
+<button class="finish-btn" id="finish-btn" onclick="finishSession()" disabled>
+  完成今日训练 ✓
+</button>
+
+<script>
+const BASE = {
+  squat: 160,
+  deadlift: 180,
+  bench: 135,
+  pullup: 0,
+  rdl: 135,
+  row: 150
+};
+
+const INCREMENT = {
+  squat: 5,
+  deadlift: 5,
+  bench: 2.5,
+  pullup: 2.5,
+  rdl: 5,
+  row: 5
+};
+
+const DAYS = [
+  {
+    name: '周一',
+    type: '力量',
+    sets: 4,
+    reps: 5,
+    pct: 1.0,
+    exercises: [
+      { key: 'squat', name: '杠铃深蹲', note: '全幅度，膝盖追脚尖，核心收紧' },
+      { key: 'deadlift', name: '杠铃硬拉', note: '杠贴小腿，背部挺直，髋部发力' },
+      { key: 'bench', name: '杠铃卧推', note: '肩胛骨收紧下沉，控制离心阶段' },
+      { key: 'pullup', name: '加重引体向上', note: '顶部停顿1秒，全幅度下放' }
+    ]
+  },
+  {
+    name: '周三',
+    type: '肌肥大',
+    sets: 4,
+    reps: 12,
+    pct: 0.75,
+    exercises: [
+      { key: 'squat', name: '腿举机', note: '脚位与肩同宽，不要锁死膝盖' },
+      { key: 'rdl', name: '罗马尼亚硬拉', note: '感受腘绳肌拉伸，杠铃不落地' },
+      { key: 'bench', name: '哑铃上斜卧推', note: '30-45度斜板，感受上胸收缩' },
+      { key: 'row', name: '坐姿绳索划船', note: '肩胛骨主动后收，不要借腰' }
+    ]
+  },
+  {
+    name: '周五',
+    type: '混合',
+    sets: 4,
+    reps: 8,
+    pct: 0.875,
+    exercises: [
+      { key: 'squat', name: '杠铃深蹲', note: '比周一轻，专注控制节奏' },
+      { key: 'rdl', name: '罗马尼亚硬拉', note: '3秒离心，感受拉伸' },
+      { key: 'bench', name: '哑铃卧推', note: '两侧独立发力，检查不平衡' },
+      { key: 'pullup', name: '引体向上', note: '自重力竭，能做几个做几个' }
+    ]
+  }
+];
+
+let currentWeek = 1;
+let currentDay = 0;
+let completedSets = {};
+let completedSessions = {};
+
+function getWeight(exerciseKey, week, dayPct) {
+  if (exerciseKey === 'pullup') {
+    const extra = (week - 1) * INCREMENT.pullup;
+    if (extra === 0) return '自重';
+    return `自重 +${extra}lbs`;
+  }
+  const base = BASE[exerciseKey];
+  const weekIncrease = (week - 1) * INCREMENT[exerciseKey];
+  const w = Math.round((base + weekIncrease) * dayPct / 2.5) * 2.5;
+  return `${w}lbs`;
+}
+
+function sessionKey(week, day) { return `w${week}d${day}`; }
+
+function renderWeeks() {
+  const container = document.getElementById('week-selector');
+  container.innerHTML = '';
+  for (let w = 1; w <= 12; w++) {
+    const btn = document.createElement('div');
+    btn.className = 'week-btn';
+    btn.textContent = `第${w}周`;
+    const allDone = [0,1,2].every(d => completedSessions[sessionKey(w,d)]);
+    if (allDone) btn.classList.add('completed');
+    if (w === currentWeek) btn.classList.add('active');
+    btn.onclick = () => { currentWeek = w; renderAll(); };
+    container.appendChild(btn);
+  }
+}
+
+function renderDayTabs() {
+  const tabs = document.querySelectorAll('.day-tab');
+  tabs.forEach((tab, i) => {
+    tab.classList.remove('active', 'done');
+    if (completedSessions[sessionKey(currentWeek, i)]) tab.classList.add('done');
+    if (i === currentDay) tab.classList.add('active');
+  });
+}
+
+function renderExercises() {
+  const day = DAYS[currentDay];
+  const key = sessionKey(currentWeek, currentDay);
+  if (!completedSets[key]) completedSets[key] = {};
+
+  let totalSets = day.exercises.length * day.sets;
+  let doneSets = Object.values(completedSets[key]).reduce((a,b) => a + b, 0);
+
+  document.getElementById('session-progress').style.width = `${(doneSets/totalSets)*100}%`;
+
+  const list = document.getElementById('exercise-list');
+  list.innerHTML = '';
+
+  const noteEl = document.createElement('div');
+  noteEl.className = 'note-box';
+
+  let weekNote = '';
+  if (currentWeek === 1) weekNote = '<strong>第1周：</strong>这是你的基准重量，专注于动作质量，不要勉强。';
+  else if (currentWeek <= 4) weekNote = `<strong>第${currentWeek}周：</strong>每个动作比上周加了重量，如果某组做不完，重量保持不变下周再试。`;
+  else if (currentWeek <= 8) weekNote = `<strong>第${currentWeek}周：</strong>你已经练了${currentWeek-1}周，力量应该有明显提升，保持专注。`;
+  else weekNote = `<strong>第${currentWeek}周：</strong>最后阶段，如果遇到瓶颈，检查睡眠和蛋白质摄入。`;
+
+  noteEl.innerHTML = weekNote;
+  list.appendChild(noteEl);
+
+  day.exercises.forEach((ex, exIdx) => {
+    const weight = getWeight(ex.key, currentWeek, day.pct);
+    const doneCount = completedSets[key][exIdx] || 0;
+    const allSetsDone = doneCount >= day.sets;
+
+    const card = document.createElement('div');
+    card.className = 'exercise-card' + (allSetsDone ? ' completed-card' : '');
+
+    let setsHtml = '';
+    for (let s = 0; s < day.sets; s++) {
+      const isDone = s < doneCount;
+      setsHtml += `
+        <div class="set-box ${isDone ? 'set-done' : ''}" onclick="toggleSet(${exIdx}, ${s})">
+          <div class="set-number">组${s+1}</div>
+          ${isDone
+            ? `<div class="set-check">✓</div>`
+            : `<div class="set-reps">${day.reps}</div>`}
+        </div>`;
+    }
+
+    card.innerHTML = `
+      <div class="exercise-header">
+        <div>
+          <div class="exercise-name">${ex.name} ${allSetsDone ? '✓' : ''}</div>
+          <div class="exercise-target">${day.sets}组 × ${day.reps}次 · ${ex.note}</div>
+        </div>
+        <div class="weight-badge">${weight}</div>
+      </div>
+      <div class="sets-grid">${setsHtml}</div>
+    `;
+    list.appendChild(card);
+  });
+
+  const finishBtn = document.getElementById('finish-btn');
+  finishBtn.disabled = doneSets < totalSets;
+  if (completedSessions[key]) {
+    finishBtn.textContent = '✓ 已完成';
+    finishBtn.disabled = true;
+  } else {
+    finishBtn.textContent = `完成今日训练 ✓`;
+  }
+}
+
+function toggleSet(exIdx, setIdx) {
+  const key = sessionKey(currentWeek, currentDay);
+  if (!completedSets[key]) completedSets[key] = {};
+
+  const day = DAYS[currentDay];
+  const current = completedSets[key][exIdx] || 0;
+
+  if (setIdx === current) {
+    completedSets[key][exIdx] = current + 1;
+  } else if (setIdx === current - 1) {
+    completedSets[key][exIdx] = current - 1;
+  } else if (setIdx < current) {
+    completedSets[key][exIdx] = setIdx;
+  } else {
+    completedSets[key][exIdx] = setIdx + 1;
+  }
+
+  save();
+  renderExercises();
+}
+
+function finishSession() {
+  const key = sessionKey(currentWeek, currentDay);
+  completedSessions[key] = true;
+  save();
+  renderAll();
+}
+
+function selectDay(d) {
+  currentDay = d;
+  renderAll();
+}
+
+function renderStats() {
+  let sessions = 0;
+  let weeks = 0;
+  for (let w = 1; w <= 12; w++) {
+    let weekSessions = 0;
+    for (let d = 0; d < 3; d++) {
+      if (completedSessions[sessionKey(w,d)]) { sessions++; weekSessions++; }
+    }
+    if (weekSessions === 3) weeks++;
+  }
+  document.getElementById('stat-weeks').textContent = weeks;
+  document.getElementById('stat-sessions').textContent = sessions;
+  document.getElementById('stat-pct').textContent = Math.round((sessions/36)*100) + '%';
+}
+
+function renderAll() {
+  renderWeeks();
+  renderDayTabs();
+  renderExercises();
+  renderStats();
+}
+
+function save() {
+  try {
+    localStorage.setItem('workout_sets', JSON.stringify(completedSets));
+    localStorage.setItem('workout_sessions', JSON.stringify(completedSessions));
+  } catch(e) {}
+}
+
+function load() {
+  try {
+    const s = localStorage.getItem('workout_sets');
+    const ss = localStorage.getItem('workout_sessions');
+    if (s) completedSets = JSON.parse(s);
+    if (ss) completedSessions = JSON.parse(ss);
+  } catch(e) {}
+}
+
+load();
+renderAll();
+</script>
+</body>
+</html>
