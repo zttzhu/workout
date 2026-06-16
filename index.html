@@ -80,6 +80,33 @@
   .set-cross { font-size: 18px; color: #d86a6a; }
 
   .stall-note { margin-top: 10px; font-size: 11px; color: #d89a6a; background: #1a120a; border-radius: 8px; padding: 8px 10px; }
+  .warmup-overview {
+    background: #121719; border: 1px solid #23343a; border-radius: 10px; padding: 12px;
+    margin-bottom: 16px; font-size: 12px; color: #8fb7c7; line-height: 1.6;
+  }
+  .warmup-overview strong { color: #a7e3f4; }
+  .warmup-panel {
+    background: #101315; border: 1px solid #243036; border-radius: 10px; padding: 10px;
+    margin-bottom: 12px;
+  }
+  .warmup-title { font-size: 12px; font-weight: 700; color: #a7e3f4; margin-bottom: 8px; }
+  .warmup-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .warmup-step {
+    background: #0d1011; border: 1px solid #263238; border-radius: 8px; padding: 8px 6px;
+    min-height: 58px;
+  }
+  .warmup-step-label { font-size: 10px; color: #6f8c96; margin-bottom: 3px; }
+  .warmup-step-weight { font-size: 13px; font-weight: 800; color: #c8f5ff; }
+  .warmup-step-reps { font-size: 10px; color: #78909a; margin-top: 2px; }
+  .warmup-note { font-size: 11px; color: #78909a; margin-top: 8px; line-height: 1.5; }
+  @media (max-width: 420px) {
+    .warmup-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .time-overview {
+    background: #101711; border: 1px solid #243623; border-radius: 10px; padding: 12px;
+    margin-bottom: 16px; font-size: 12px; color: #9abc8d; line-height: 1.6;
+  }
+  .time-overview strong { color: #c7f6a4; }
 
   .progress-bar-wrap { background: #1a1a1a; border-radius: 4px; height: 4px; margin-bottom: 8px; overflow: hidden; }
   .progress-bar-fill { height: 100%; background: #e8ff00; border-radius: 4px; transition: width 0.4s ease; }
@@ -168,20 +195,20 @@ const BASE = { squat:160, deadlift:180, bench:135, pullup:0, rdl:135, row:150 };
 const INCREMENT = { squat:5, deadlift:5, bench:2.5, pullup:2.5, rdl:5, row:5 };
 
 const DAYS = [
-  { name:'周一', type:'力量', sets:4, reps:5, pct:1.0, rest:180, exercises:[
-    { key:'squat',    name:'杠铃深蹲',       note:'全幅度，膝盖追脚尖，核心收紧' },
-    { key:'deadlift', name:'杠铃硬拉',       note:'杠贴小腿，背部挺直，髋部发力' },
+  { name:'周一', type:'力量', sets:3, reps:5, pct:1.0, rest:120, exercises:[
+    { key:'squat',    name:'杠铃深蹲',       note:'全幅度，膝盖追脚尖，核心收紧', rest:150 },
+    { key:'deadlift', name:'杠铃硬拉',       note:'杠贴小腿，背部挺直，髋部发力', sets:2, rest:150 },
     { key:'bench',    name:'杠铃卧推',       note:'肩胛骨收紧下沉，控制离心阶段' },
     { key:'pullup',   name:'加重引体向上',   note:'顶部停顿1秒，全幅度下放' }
   ]},
-  { name:'周三', type:'肌肥大', sets:4, reps:12, pct:0.75, rest:75, exercises:[
+  { name:'周三', type:'肌肥大', sets:3, reps:10, pct:0.75, rest:60, exercises:[
     { key:'squat', name:'腿举机',           note:'脚位与肩同宽，不要锁死膝盖' },
     { key:'rdl',   name:'罗马尼亚硬拉',     note:'感受腘绳肌拉伸，杠铃不落地' },
     { key:'bench', name:'哑铃上斜卧推',     note:'30-45度斜板，感受上胸收缩' },
     { key:'row',   name:'坐姿绳索划船',     note:'肩胛骨主动后收，不要借腰' }
   ]},
-  { name:'周五', type:'混合', sets:4, reps:8, pct:0.875, rest:120, exercises:[
-    { key:'squat', name:'杠铃深蹲',         note:'比周一轻，专注控制节奏' },
+  { name:'周五', type:'混合', sets:3, reps:8, pct:0.875, rest:90, exercises:[
+    { key:'squat', name:'杠铃深蹲',         note:'比周一轻，专注控制节奏', rest:120 },
     { key:'rdl',   name:'罗马尼亚硬拉',     note:'3秒离心，感受拉伸' },
     { key:'bench', name:'哑铃卧推',         note:'两侧独立发力，检查不平衡' },
     { key:'pullup',name:'引体向上',         note:'自重力竭，能做几个做几个' }
@@ -189,7 +216,8 @@ const DAYS = [
 ];
 
 const DELOAD_SETS = 2;
-const DELOAD_REST = 90;
+const DELOAD_REST = 60;
+const TIME_LIMIT = 40;
 
 let currentWeek = 1;
 let currentDay = 0;
@@ -209,14 +237,17 @@ function dayConfig(day, week){
   const dl = isDeload(week);
   return { ...d, sets: dl?DELOAD_SETS:d.sets, rest: dl?DELOAD_REST:d.rest, deload: dl };
 }
+function exerciseSets(ex, cfg){ return cfg.deload ? Math.min(DELOAD_SETS, ex.sets || cfg.sets) : (ex.sets || cfg.sets); }
+function exerciseReps(ex, cfg){ return ex.reps || cfg.reps; }
+function exerciseRest(ex, cfg){ return cfg.deload ? DELOAD_REST : (ex.rest || cfg.rest); }
 
 function blockPeakNum(key, week){
   const block = Math.floor((week-1)/4);
   const inc = INCREMENT[key];
   return (BASE[key] + block*(2*inc)) + 2*inc;
 }
-// returns numeric suggested weight (pullup => added lbs, can be 0)
-function suggestedNum(key, week, dayPct){
+// Original plan weight before any user edits (pullup => added lbs, can be 0).
+function plannedNum(key, week, dayPct){
   const inc = INCREMENT[key];
   if(isDeload(week)) return round25(blockPeakNum(key, week)*0.6);
   const block = Math.floor((week-1)/4), wib = (week-1)%4;
@@ -224,16 +255,114 @@ function suggestedNum(key, week, dayPct){
   if(key==='pullup') return round25(blockBase + wib*inc);
   return round25((blockBase + wib*inc)*dayPct);
 }
+function latestWeightAnchor(key, exIdx, week, day, dayPct){
+  for(let w=week; w>=1; w--){
+    const k = sk(w, day);
+    if(actualWeights[k] && actualWeights[k][exIdx] !== undefined){
+      return {
+        week: w,
+        actual: actualWeights[k][exIdx],
+        planned: plannedNum(key, w, dayPct)
+      };
+    }
+  }
+  return null;
+}
+// Suggested weight after user edits. Later weeks inherit the latest manual change
+// for the same training day/exercise slot, while keeping the programmed jumps.
+function suggestedNum(key, exIdx, week, day, dayPct){
+  const planned = plannedNum(key, week, dayPct);
+  const anchor = latestWeightAnchor(key, exIdx, week, day, dayPct);
+  if(!anchor) return planned;
+  return Math.max(0, round25(anchor.actual + (planned - anchor.planned)));
+}
 function fmtWeight(key, num){
   if(key==='pullup') return num<=0 ? '自重' : '自重+'+num+'lbs';
   return num+'lbs';
 }
 function epley(w, reps){ return Math.round(w*(1+reps/30)); }
+function warmupWeight(key, actual, pct){
+  if(pct === 0) return key==='pullup' ? '肩胛控制' : '空杆/轻重量';
+  if(key==='pullup'){
+    const added = round25(actual*pct);
+    return added<=0 ? '自重' : '自重+'+added+'lbs';
+  }
+  if(actual <= 0) return '轻重量';
+  return fmtWeight(key, round25(actual*pct));
+}
+function warmupNote(ex){
+  if(ex.key==='squat'){
+    return '下肢先做臀桥、徒手深蹲、脚踝前移各8-10次。膝盖如果出现尖锐疼痛，停止正组并降重或改成无痛范围。';
+  }
+  if(ex.key==='deadlift' || ex.key==='rdl'){
+    return '先做髋铰链练习和臀桥各8-10次，热身组每一下都保持背部稳定，不要抢重量。';
+  }
+  if(ex.key==='bench' || ex.key==='row'){
+    return '先做肩胛俯卧撑或弹力带拉开10-15次，让肩胛稳定后再加重量。';
+  }
+  if(ex.key==='pullup'){
+    return '先做悬垂和肩胛引体，确认肩膀稳定；自重都不顺时先不要加重。';
+  }
+  return '热身组只为找动作感觉，不要做到力竭。';
+}
+function warmupSteps(ex, actual, exIdx, cfg){
+  if(ex.key==='pullup'){
+    const steps = [
+      { label:'激活', weight:'悬垂', reps:'20-30秒' },
+      { label:'肩胛', weight:'自重', reps:'6-8次' },
+      { label:'预备', weight:actual>0 ? warmupWeight(ex.key, actual, 0.5) : '自重', reps:'1-3次' }
+    ];
+    return cfg && cfg.deload ? steps.slice(0, 2) : steps;
+  }
+  if(cfg && cfg.deload){
+    return [
+      { label:'第1组', weight:warmupWeight(ex.key, actual, 0), reps:'5次' },
+      { label:'第2组', weight:warmupWeight(ex.key, actual, 0.6), reps:'3次' }
+    ];
+  }
+  if(exIdx > 0){
+    return [
+      { label:'预备1', weight:warmupWeight(ex.key, actual, 0.5), reps:'5次' },
+      { label:'预备2', weight:warmupWeight(ex.key, actual, 0.75), reps:'2次' }
+    ];
+  }
+  return [
+    { label:'第1组', weight:warmupWeight(ex.key, actual, 0), reps:'6次' },
+    { label:'第2组', weight:warmupWeight(ex.key, actual, 0.6), reps:'3次' },
+    { label:'第3组', weight:warmupWeight(ex.key, actual, 0.8), reps:'1次' }
+  ];
+}
+function warmupHtml(ex, actual, exIdx, cfg){
+  const steps = warmupSteps(ex, actual, exIdx, cfg).map(s =>
+    '<div class="warmup-step">'
+      +'<div class="warmup-step-label">'+s.label+'</div>'
+      +'<div class="warmup-step-weight">'+s.weight+'</div>'
+      +'<div class="warmup-step-reps">'+s.reps+'</div>'
+    +'</div>'
+  ).join('');
+  return '<div class="warmup-panel">'
+    +'<div class="warmup-title">精简热身 · 不计入正式组</div>'
+    +'<div class="warmup-grid">'+steps+'</div>'
+    +'<div class="warmup-note">'+warmupNote(ex)+'</div>'
+  +'</div>';
+}
+function estimateSessionMinutes(day, week){
+  const cfg = dayConfig(day, week);
+  let minutes = cfg.deload ? 3 : 4;
+  cfg.exercises.forEach((ex, exIdx)=>{
+    const sets = exerciseSets(ex, cfg);
+    const reps = exerciseReps(ex, cfg);
+    const rest = exerciseRest(ex, cfg);
+    minutes += warmupSteps(ex, 100, exIdx, cfg).length * 0.7;
+    minutes += sets * (reps >= 10 ? 0.75 : 0.55);
+    minutes += Math.max(0, sets-1) * rest / 60;
+    minutes += 0.6;
+  });
+  return Math.round(minutes);
+}
 
 function getActual(key, exIdx, week, day, dayPct){
-  const k = sk(week, day);
-  if(actualWeights[k] && actualWeights[k][exIdx] !== undefined) return actualWeights[k][exIdx];
-  return suggestedNum(key, week, dayPct);
+  return suggestedNum(key, exIdx, week, day, dayPct);
 }
 function setActual(exIdx, val){
   const k = sk(currentWeek, currentDay);
@@ -314,11 +443,12 @@ function renderWeeks(){
 }
 function renderDayTabs(){
   const dl = isDeload(currentWeek);
-  const labels = dl ? ['减载 2组','减载 2组','减载 2组']
-                    : ['力量 4×5','肌肥大 4×12','混合 4×8'];
   for(let i=0;i<3;i++){
     const tab = document.getElementById('tab'+i);
-    document.getElementById('lbl'+i).textContent = labels[i];
+    const d = DAYS[i];
+    document.getElementById('lbl'+i).textContent = dl
+      ? ('减载 ~'+estimateSessionMinutes(i,currentWeek)+'分')
+      : (d.type+' ~'+estimateSessionMinutes(i,currentWeek)+'分');
     tab.classList.remove('active','done');
     if(completedSessions[sk(currentWeek,i)]) tab.classList.add('done');
     if(i===currentDay) tab.classList.add('active');
@@ -340,15 +470,28 @@ function renderExercises(){
     banner.className = 'deload-banner';
     banner.style.borderColor = '#222'; banner.style.background='#141414'; banner.style.color='#888';
     const block = Math.floor((currentWeek-1)/4)+1, wib=((currentWeek-1)%4)+1;
-    banner.innerHTML = '<strong style="color:#e8ff00;">第'+block+'区块 · 冲击第'+wib+'/3周：</strong>建议重量已自动进阶。点一下打勾✓，再点变✗（没完成）。完成✓自动开始组间计时。';
+    banner.innerHTML = '<strong style="color:#e8ff00;">第'+block+'区块 · 冲击第'+wib+'/3周：</strong>40分钟版本：减少总组数、精简热身、控制休息。你手动改过的重量会成为后续同一训练日的基准。';
   }
   list.appendChild(banner);
+
+  const timeOverview = document.createElement('div');
+  timeOverview.className = 'time-overview';
+  timeOverview.innerHTML = '<strong>今日预计 '+estimateSessionMinutes(currentDay,currentWeek)+' 分钟 / 目标 '+TIME_LIMIT+' 分钟：</strong>正组休息按计时器走；如果当天时间不够，优先完成前3个动作，最后一个动作少做1组。';
+  list.appendChild(timeOverview);
+
+  const warmupOverview = document.createElement('div');
+  warmupOverview.className = 'warmup-overview';
+  warmupOverview.innerHTML = '<strong>精简热身：</strong>3-5分钟单车/快走到微出汗；深蹲日前加臀桥、徒手深蹲、脚踝活动各6-8次。之后按每个动作的精简热身组进入正组。任何尖锐疼痛都不要硬顶，先停止、降重或换无痛动作。';
+  list.appendChild(warmupOverview);
 
   let totalSets=0, attempted=0, done=0, tonnage=0;
 
   cfg.exercises.forEach((ex, exIdx)=>{
-    const states = getStates(exIdx, cfg.sets);
-    totalSets += cfg.sets;
+    const workSets = exerciseSets(ex, cfg);
+    const workReps = exerciseReps(ex, cfg);
+    const workRest = exerciseRest(ex, cfg);
+    const states = getStates(exIdx, workSets);
+    totalSets += workSets;
     const nDone = states.filter(s=>s==='done').length;
     const nFail = states.filter(s=>s==='failed').length;
     attempted += states.filter(s=>s!=='').length;
@@ -358,32 +501,33 @@ function renderExercises(){
 
     const actual = getActual(ex.key, exIdx, currentWeek, currentDay, cfg.pct);
     const loadFull = ex.key==='pullup' ? bodyWeight + actual : actual;
-    tonnage += loadFull * cfg.reps * nDone;
+    tonnage += loadFull * workReps * nDone;
 
     const card = document.createElement('div');
     card.className = 'exercise-card' + (allDone&&nFail===0?' completed-card':'') + (stalled?' stall-card':'');
 
     let setsHtml='';
-    for(let s=0; s<cfg.sets; s++){
+    for(let s=0; s<workSets; s++){
       const st = states[s];
       let inner;
       if(st==='done') inner = '<div class="set-check">✓</div>';
       else if(st==='failed') inner = '<div class="set-cross">✗</div>';
-      else inner = '<div class="set-reps">'+cfg.reps+'</div>';
+      else inner = '<div class="set-reps">'+workReps+'</div>';
       setsHtml += '<div class="set-box '+(st==='done'?'set-done':st==='failed'?'set-failed':'')+'" '
-        + 'onclick="cycleSet('+exIdx+','+s+','+cfg.sets+','+cfg.rest+')">'
+        + 'onclick="cycleSet('+exIdx+','+s+','+workSets+','+workRest+')">'
         + '<div class="set-number">组'+(s+1)+'</div>'+inner+'</div>';
     }
 
     const ormHtml = loadFull>0
-      ? '<span class="orm">预估1RM ~'+epley(loadFull, cfg.reps)+'lbs'+(ex.key==='pullup'?'（含自重）':'')+'</span>' : '';
+      ? '<span class="orm">预估1RM ~'+epley(loadFull, workReps)+'lbs'+(ex.key==='pullup'?'（含自重）':'')+'</span>' : '';
 
     card.innerHTML =
       '<div class="exercise-header">'
         +'<div><div class="exercise-name">'+ex.name+' '+(allDone&&nFail===0?'✓':'')+'</div>'
-        +'<div class="exercise-target">'+cfg.sets+'组 × '+cfg.reps+'次 · '+ex.note+'</div></div>'
-        +'<div class="suggest-badge">建议 '+fmtWeight(ex.key, suggestedNum(ex.key,currentWeek,cfg.pct))+'</div>'
+        +'<div class="exercise-target">'+workSets+'组 × '+workReps+'次 · 休'+workRest+'秒 · '+ex.note+'</div></div>'
+        +'<div class="suggest-badge">建议 '+fmtWeight(ex.key, suggestedNum(ex.key,exIdx,currentWeek,currentDay,cfg.pct))+'</div>'
       +'</div>'
+      +warmupHtml(ex, actual, exIdx, cfg)
       +'<div class="weight-row">'
         +'<div class="weight-stepper">'
           +'<button class="step-btn" onclick="stepWeight('+exIdx+',\''+ex.key+'\',-1)">−</button>'
